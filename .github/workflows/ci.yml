@@ -1,0 +1,24 @@
+name: windows-build-test
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          dotnet-version: 10.0.x
+      - run: dotnet restore MegaplanUnisender.sln --configfile NuGet.Config
+      - run: dotnet build MegaplanUnisender.sln -c Release --no-restore
+      - run: dotnet test MegaplanUnisender.sln -c Release --no-build --no-restore --logger trx
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: test-results
+          path: tests/**/TestResults/*.trx

@@ -1,0 +1,25 @@
+# Portainer -> Docker Standalone -> Stacks -> Add stack -> Web editor.
+# Replace the example CRM URL and application UUID.
+# Set the three credentials in Portainer Stack environment variables.
+services:
+  sync:
+    image: ghcr.io/kostazol/unisender-sync:1.0.0
+    restart: always
+    stop_grace_period: 45s
+    stdin_open: true
+    tty: true
+    environment:
+      Settings__Megaplan__BaseUrl: https://megaplan.example.com
+      Settings__Megaplan__ExpectedIntegrationUuid: 4954444c-5f4b-4c16-bf4f-99a0953cbcc4
+      Settings__Megaplan__EligibilityGlobalTagName: Unisender
+      Settings__Unisender__ListName: Мегаплан
+      Secrets__MegaplanApiToken: ${MEGAPLAN_API_TOKEN:?}
+      Secrets__UnisenderApiKey: ${UNISENDER_API_KEY:?}
+      Secrets__WebhookSecret: ${WEBHOOK_SECRET:?}
+    ports:
+      - "5080:8080"
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"

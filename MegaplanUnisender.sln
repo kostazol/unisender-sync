@@ -1,0 +1,161 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MegaplanUnisender.Api", "src\MegaplanUnisender.Api\MegaplanUnisender.Api.csproj", "{B46B3139-9804-4666-ABD6-B8B4C763270B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MegaplanUnisender.Core", "src\MegaplanUnisender.Core\MegaplanUnisender.Core.csproj", "{8FFFFAB0-AA5D-48A9-85DF-4FDAFA2A967F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MegaplanUnisender.Infrastructure", "src\MegaplanUnisender.Infrastructure\MegaplanUnisender.Infrastructure.csproj", "{70D6F80D-DE34-4487-A8EF-06CF1A42F8CF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MegaplanUnisender.UnitTests", "tests\MegaplanUnisender.UnitTests\MegaplanUnisender.UnitTests.csproj", "{754FAD88-1778-4B34-928E-CE7CAFED694C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MegaplanUnisender.IntegrationTests", "tests\MegaplanUnisender.IntegrationTests\MegaplanUnisender.IntegrationTests.csproj", "{E60688CC-DEFA-4C44-A8D6-DBA0D29090EC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DCED1882-5A6A-4D68-8D92-A8DE7CF14F35}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		.env.example = .env.example
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		appsettings.example.json = appsettings.example.json
+		compose.yaml = compose.yaml
+		Directory.Build.props = Directory.Build.props
+		Dockerfile = Dockerfile
+		global.json = global.json
+		NuGet.Config = NuGet.Config
+		README.md = README.md
+		secrets.example.json = secrets.example.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{78C5D81B-F2DA-4BB6-ACF9-34F9775B3CA4}"
+	ProjectSection(SolutionItems) = preProject
+		docs\API_COMPATIBILITY.md = docs\API_COMPATIBILITY.md
+		docs\ARCHITECTURE.md = docs\ARCHITECTURE.md
+		docs\CLI.md = docs\CLI.md
+		docs\CONSOLE.md = docs\CONSOLE.md
+		docs\CONFIGURATION.md = docs\CONFIGURATION.md
+		docs\DOCKER.md = docs\DOCKER.md
+		docs\HTTP_API.md = docs\HTTP_API.md
+		docs\LINUX_SERVICE.md = docs\LINUX_SERVICE.md
+		docs\MANUAL_API_TESTS.md = docs\MANUAL_API_TESTS.md
+		docs\MEGAPLAN.md = docs\MEGAPLAN.md
+		docs\OPERATIONS.md = docs\OPERATIONS.md
+		docs\PUBLISHING.md = docs\PUBLISHING.md
+		docs\REVIEW.md = docs\REVIEW.md
+		docs\RUNNING.md = docs\RUNNING.md
+		docs\UNISENDER.md = docs\UNISENDER.md
+		docs\WINDOWS_SERVICE.md = docs\WINDOWS_SERVICE.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{D9B74669-014B-45EC-9A3F-7C96033D239B}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\Initialize-Local.ps1 = scripts\Initialize-Local.ps1
+		scripts\Start-Local.ps1 = scripts\Start-Local.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deploy", "deploy", "{BD77A70B-8B74-4A0C-8DA4-3F4143B92A1C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "portainer", "portainer", "{1DE755A7-A46F-4EF3-B9B6-A2883B8A775B}"
+	ProjectSection(SolutionItems) = preProject
+		deploy\portainer\compose.yaml = deploy\portainer\compose.yaml
+		deploy\portainer\compose.swarm.yaml = deploy\portainer\compose.swarm.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{A7943F49-F3B9-4A31-92AD-E35120D9842F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{D6A771C5-CB16-4694-9FA9-587E99BF3641}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\ci.yml = .github\workflows\ci.yml
+		.github\workflows\publish.yml = .github\workflows\publish.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B46B3139-9804-4666-ABD6-B8B4C763270B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B46B3139-9804-4666-ABD6-B8B4C763270B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B46B3139-9804-4666-ABD6-B8B4C763270B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B46B3139-9804-4666-ABD6-B8B4C763270B}.Debug|x64.Build.0 = Debug|Any CPU
+		{B46B3139-9804-4666-ABD6-B8B4C763270B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B46B3139-9804-4666-ABD6-B8B4C763270B}.Debug|x86.Build.0 = Debug|Any CPU
+		{B46B3139-9804-4666-ABD6-B8B4C763270B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B46B3139-9804-4666-ABD6-B8B4C763270B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B46B3139-9804-4666-ABD6-B8B4C763270B}.Release|x64.ActiveCfg = Release|Any CPU
+		{B46B3139-9804-4666-ABD6-B8B4C763270B}.Release|x64.Build.0 = Release|Any CPU
+		{B46B3139-9804-4666-ABD6-B8B4C763270B}.Release|x86.ActiveCfg = Release|Any CPU
+		{B46B3139-9804-4666-ABD6-B8B4C763270B}.Release|x86.Build.0 = Release|Any CPU
+		{8FFFFAB0-AA5D-48A9-85DF-4FDAFA2A967F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FFFFAB0-AA5D-48A9-85DF-4FDAFA2A967F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FFFFAB0-AA5D-48A9-85DF-4FDAFA2A967F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8FFFFAB0-AA5D-48A9-85DF-4FDAFA2A967F}.Debug|x64.Build.0 = Debug|Any CPU
+		{8FFFFAB0-AA5D-48A9-85DF-4FDAFA2A967F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8FFFFAB0-AA5D-48A9-85DF-4FDAFA2A967F}.Debug|x86.Build.0 = Debug|Any CPU
+		{8FFFFAB0-AA5D-48A9-85DF-4FDAFA2A967F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FFFFAB0-AA5D-48A9-85DF-4FDAFA2A967F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FFFFAB0-AA5D-48A9-85DF-4FDAFA2A967F}.Release|x64.ActiveCfg = Release|Any CPU
+		{8FFFFAB0-AA5D-48A9-85DF-4FDAFA2A967F}.Release|x64.Build.0 = Release|Any CPU
+		{8FFFFAB0-AA5D-48A9-85DF-4FDAFA2A967F}.Release|x86.ActiveCfg = Release|Any CPU
+		{8FFFFAB0-AA5D-48A9-85DF-4FDAFA2A967F}.Release|x86.Build.0 = Release|Any CPU
+		{70D6F80D-DE34-4487-A8EF-06CF1A42F8CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70D6F80D-DE34-4487-A8EF-06CF1A42F8CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70D6F80D-DE34-4487-A8EF-06CF1A42F8CF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{70D6F80D-DE34-4487-A8EF-06CF1A42F8CF}.Debug|x64.Build.0 = Debug|Any CPU
+		{70D6F80D-DE34-4487-A8EF-06CF1A42F8CF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{70D6F80D-DE34-4487-A8EF-06CF1A42F8CF}.Debug|x86.Build.0 = Debug|Any CPU
+		{70D6F80D-DE34-4487-A8EF-06CF1A42F8CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70D6F80D-DE34-4487-A8EF-06CF1A42F8CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70D6F80D-DE34-4487-A8EF-06CF1A42F8CF}.Release|x64.ActiveCfg = Release|Any CPU
+		{70D6F80D-DE34-4487-A8EF-06CF1A42F8CF}.Release|x64.Build.0 = Release|Any CPU
+		{70D6F80D-DE34-4487-A8EF-06CF1A42F8CF}.Release|x86.ActiveCfg = Release|Any CPU
+		{70D6F80D-DE34-4487-A8EF-06CF1A42F8CF}.Release|x86.Build.0 = Release|Any CPU
+		{754FAD88-1778-4B34-928E-CE7CAFED694C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{754FAD88-1778-4B34-928E-CE7CAFED694C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{754FAD88-1778-4B34-928E-CE7CAFED694C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{754FAD88-1778-4B34-928E-CE7CAFED694C}.Debug|x64.Build.0 = Debug|Any CPU
+		{754FAD88-1778-4B34-928E-CE7CAFED694C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{754FAD88-1778-4B34-928E-CE7CAFED694C}.Debug|x86.Build.0 = Debug|Any CPU
+		{754FAD88-1778-4B34-928E-CE7CAFED694C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{754FAD88-1778-4B34-928E-CE7CAFED694C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{754FAD88-1778-4B34-928E-CE7CAFED694C}.Release|x64.ActiveCfg = Release|Any CPU
+		{754FAD88-1778-4B34-928E-CE7CAFED694C}.Release|x64.Build.0 = Release|Any CPU
+		{754FAD88-1778-4B34-928E-CE7CAFED694C}.Release|x86.ActiveCfg = Release|Any CPU
+		{754FAD88-1778-4B34-928E-CE7CAFED694C}.Release|x86.Build.0 = Release|Any CPU
+		{E60688CC-DEFA-4C44-A8D6-DBA0D29090EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E60688CC-DEFA-4C44-A8D6-DBA0D29090EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E60688CC-DEFA-4C44-A8D6-DBA0D29090EC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E60688CC-DEFA-4C44-A8D6-DBA0D29090EC}.Debug|x64.Build.0 = Debug|Any CPU
+		{E60688CC-DEFA-4C44-A8D6-DBA0D29090EC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E60688CC-DEFA-4C44-A8D6-DBA0D29090EC}.Debug|x86.Build.0 = Debug|Any CPU
+		{E60688CC-DEFA-4C44-A8D6-DBA0D29090EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E60688CC-DEFA-4C44-A8D6-DBA0D29090EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E60688CC-DEFA-4C44-A8D6-DBA0D29090EC}.Release|x64.ActiveCfg = Release|Any CPU
+		{E60688CC-DEFA-4C44-A8D6-DBA0D29090EC}.Release|x64.Build.0 = Release|Any CPU
+		{E60688CC-DEFA-4C44-A8D6-DBA0D29090EC}.Release|x86.ActiveCfg = Release|Any CPU
+		{E60688CC-DEFA-4C44-A8D6-DBA0D29090EC}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1DE755A7-A46F-4EF3-B9B6-A2883B8A775B} = {BD77A70B-8B74-4A0C-8DA4-3F4143B92A1C}
+		{D6A771C5-CB16-4694-9FA9-587E99BF3641} = {A7943F49-F3B9-4A31-92AD-E35120D9842F}
+		{B46B3139-9804-4666-ABD6-B8B4C763270B} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{8FFFFAB0-AA5D-48A9-85DF-4FDAFA2A967F} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{70D6F80D-DE34-4487-A8EF-06CF1A42F8CF} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{754FAD88-1778-4B34-928E-CE7CAFED694C} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{E60688CC-DEFA-4C44-A8D6-DBA0D29090EC} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+	EndGlobalSection
+EndGlobal
