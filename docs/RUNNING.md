@@ -45,7 +45,7 @@
 Или из готового контейнерного образа:
 
 ```bash
-docker run --rm --network none ghcr.io/kostazol/unisender-sync:1.0.1 --command generate-webhook-secret
+docker run --rm --network none ghcr.io/kostazol/unisender-sync:1.1.0 --command generate-webhook-secret
 ```
 
 Команда печатает 64 случайных hex-символа, не требует API и ничего не сохраняет. Используйте результат как WebhookSecret и часть URL события. При смене секрета обновите URL в Megaplan и перезапустите приложение.

@@ -36,6 +36,7 @@ builder.Services.AddScoped<WebhookProcessor>();
 builder.Services.AddSingleton<CliCommands>();
 builder.Services.AddHostedService<ConfigurationInitializer>();
 builder.Services.AddHostedService<WebhookWorker>();
+builder.Services.AddHostedService<ContractorPollingWorker>();
 builder.Services.AddHostedService<TerminalConsole>();
 builder.Services.Configure<HostOptions>(o => o.ShutdownTimeout = TimeSpan.FromSeconds(45));
 builder.WebHost.ConfigureKestrel(o => o.Limits.MaxRequestBodySize = 1048576);

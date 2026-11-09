@@ -123,7 +123,7 @@ public sealed class CliCommands(IServiceProvider services, IOptions<IntegrationO
     private object Configuration()
     {
         var o = options.Value;
-        return new { o.Sync.Enabled, o.Sync.DryRun,
+        return new { o.Sync.Enabled, o.Sync.DryRun, o.Sync.PollingIntervalMinutes,
             Megaplan = new { o.Megaplan.AccountIdentityField, o.Megaplan.ExpectedAccountId, o.Megaplan.EligibilityGlobalTagId,
                 o.Megaplan.EligibilityGlobalTagName, o.Megaplan.SyncAllGlobalTags, KnownGlobalTags = o.Megaplan.ManagedGlobalTagIds.Length },
             Unisender = new { Configured = secrets.Value.HasUnisenderApiKey, o.Unisender.ListId, o.Unisender.ListName },

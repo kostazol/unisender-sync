@@ -1,5 +1,7 @@
+using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Numerics;
 using System.Text.Json;
 using MegaplanUnisender.Core;
 using Microsoft.Extensions.Options;
@@ -83,6 +85,70 @@ public sealed class MegaplanClient(HttpClient http, IOptions<IntegrationOptions>
             cursorId = lastId;
         }
         throw new SyncException("megaplan_tag_catalog_page_limit");
+    }
+    public async Task<IReadOnlyList<ContractorUpdate>> GetContractorUpdatesAsync(DateTimeOffset from, DateTimeOffset until, CancellationToken ct)
+    {
+        // Megaplan's date filter has minute precision. Check the exact window locally.
+        var filterFrom = DateTimeOffset.FromUnixTimeSeconds(from.ToUnixTimeSeconds() / 60 * 60);
+        var filterUntil = DateTimeOffset.FromUnixTimeSeconds(until.ToUnixTimeSeconds() / 60 * 60).AddMinutes(1);
+        var term = new
+        {
+            contentType = "FilterTermDate", field = "timeUpdated", comparison = "equals",
+            value = new
+            {
+                contentType = "IntervalTime",
+                from = new { contentType = "DateTime", value = filterFrom },
+                to = new { contentType = "DateTime", value = filterUntil }
+            }
+        };
+        var query = new Dictionary<string, object>
+        {
+            ["limit"] = 100,
+            ["fields"] = new[] { "timeUpdated" },
+            ["onlyRequestedFields"] = true,
+            ["sortBy"] = new[] { new { contentType = "SortField", fieldName = "id", desc = true } },
+            ["filter"] = new
+            {
+                contentType = "CrmFilter",
+                config = new
+                {
+                    contentType = "FilterConfig",
+                    termGroup = new { contentType = "FilterTermGroup", join = "and", terms = new[] { term } }
+                }
+            }
+        };
+        var updates = new List<ContractorUpdate>();
+        BigInteger? previousId = null;
+        while (true)
+        {
+            var root = await RequestAsync("api/v3/contractor", query, ct) ?? throw new SyncException("megaplan_updates_unavailable");
+            var data = root.GetProperty("data");
+            if (data.ValueKind != JsonValueKind.Array ||
+                !root.TryGetProperty("meta", out var meta) || meta.ValueKind != JsonValueKind.Object ||
+                !meta.TryGetProperty("pagination", out var pagination) || pagination.Bool("hasMoreNext") is not { } hasMore)
+                throw new SyncException("megaplan_updates_pagination_invalid");
+
+            foreach (var item in data.EnumerateArray())
+            {
+                var id = item.Text("id");
+                var model = item.Text("contentType");
+                if (id is null || id.Length is < 1 or > 40 || !BigInteger.TryParse(id, NumberStyles.None, CultureInfo.InvariantCulture, out var numericId) ||
+                    string.IsNullOrEmpty(model) || !item.TryGetProperty("timeUpdated", out var date) ||
+                    !DateTimeOffset.TryParse(date.Text("value"), CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var changedAt))
+                    throw new SyncException("megaplan_updates_card_invalid");
+                if (previousId is { } previous && numericId >= previous)
+                    throw new SyncException("megaplan_updates_pagination_stalled");
+
+                previousId = numericId;
+                if (changedAt >= from && changedAt < until && o.ContractorModels.Contains(model))
+                    updates.Add(new ContractorUpdate(id, model));
+            }
+
+            if (!hasMore) return updates;
+            if (data.GetArrayLength() == 0) throw new SyncException("megaplan_updates_pagination_stalled");
+            var last = data[data.GetArrayLength() - 1];
+            query["pageAfter"] = new { id = last.Text("id"), contentType = last.Text("contentType") };
+        }
     }
     public async Task<Contractor?> GetAsync(string id, CancellationToken ct)
     {

@@ -22,6 +22,7 @@ public sealed class SyncRuntime(IOptions<IntegrationOptions> options, TimeProvid
     { SingleReader = true, FullMode = BoundedChannelFullMode.Wait });
     private int pending;
     private DateTime? lastSuccessAt;
+    private DateTimeOffset? lastSuccessfulPollAt;
     public SemaphoreSlim ProcessingLock { get; } = new(1, 1);
     public ChannelReader<WebhookEvent> Reader => queue.Reader;
     private readonly Dictionary<string, RecentContractor> contractors = [];
@@ -84,6 +85,20 @@ public sealed class SyncRuntime(IOptions<IntegrationOptions> options, TimeProvid
             return true;
         }
     }
+    public async Task EnqueueAsync(WebhookEvent entry, CancellationToken ct)
+    {
+        while (await queue.Writer.WaitToWriteAsync(ct))
+        {
+            if (TryAccept(entry)) return;
+        }
+        throw new ChannelClosedException();
+    }
+
+    public void CompletePoll(DateTimeOffset checkedThrough)
+    {
+        lock (historyLock) lastSuccessfulPollAt = checkedThrough;
+    }
+
     public string Retry(Guid uuid)
     {
         lock (historyLock)
@@ -116,8 +131,9 @@ public sealed class SyncRuntime(IOptions<IntegrationOptions> options, TimeProvid
     {
         lock (historyLock) return new
         {
-            options.Value.Sync.Enabled, options.Value.Sync.DryRun, Pending = pending,
+            options.Value.Sync.Enabled, options.Value.Sync.DryRun, options.Value.Sync.PollingIntervalMinutes, Pending = pending,
             Processing = events.Values.Count(x => x.Status == "Processing"), LastSuccessAt = lastSuccessAt,
+            LastSuccessfulPollAt = lastSuccessfulPollAt,
             Errors = events.Values.Where(x => x.Status is "Failed" or "Uncertain").OrderByDescending(x => x.ReceivedAt).Take(20).Select(x => x with { }).ToArray()
         };
     }

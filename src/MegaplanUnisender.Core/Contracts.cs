@@ -9,10 +9,12 @@ public sealed record ContactStatus(bool Exists, bool MaySubscribe, bool InList, 
     public IReadOnlyDictionary<string, string> Fields { get; init; } = new Dictionary<string, string>();
 }
 public sealed record MegaplanTag(string Id, string Name, bool IsGlobal);
+public sealed record ContractorUpdate(string Id, string Model);
 public interface IMegaplanClient
 {
     Task<string> GetAccountIdentityAsync(string field, CancellationToken ct);
     Task<Contractor?> GetAsync(string id, CancellationToken ct);
+    Task<IReadOnlyList<ContractorUpdate>> GetContractorUpdatesAsync(DateTimeOffset from, DateTimeOffset until, CancellationToken ct);
     Task<IReadOnlyList<MegaplanTag>> GetGlobalTagsAsync(CancellationToken ct);
     Task<object> DiagnoseAsync(string id, CancellationToken ct);
 }

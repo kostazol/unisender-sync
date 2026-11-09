@@ -11,6 +11,7 @@ public sealed class IntegrationOptions
     public IEnumerable<string> Validate()
     {
         if (Webhook.MaxBodySize is < 1024 or > 1048576) yield return "Webhook:MaxBodySize must be 1024..1048576";
+        if (Sync.PollingIntervalMinutes is < 0 or > 43200) yield return "Sync:PollingIntervalMinutes must be 0..43200";
         if (Sync.MaxRetries is < 0 or > 20 || Sync.RetryBackoff <= TimeSpan.Zero) yield return "Invalid Sync retry settings";
         if (Sync.QueueCapacity is < 1 or > 4096) yield return "QueueCapacity must be 1..4096";
         if (Sync.RecentContractorCacheCapacity is < 1 or > 4096 || Sync.RecentContractorCacheTtl <= TimeSpan.Zero ||
@@ -96,6 +97,7 @@ public sealed class SyncOptions
 {
     public bool Enabled { get; set; }
     public bool DryRun { get; set; } = true;
+    public int PollingIntervalMinutes { get; set; }
     public int QueueCapacity { get; set; } = 256;
     public int RecentContractorCacheCapacity { get; set; } = 256;
     public TimeSpan RecentContractorCacheTtl { get; set; } = TimeSpan.FromMinutes(5);

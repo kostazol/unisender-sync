@@ -1,13 +1,13 @@
 # Docker и Portainer
 
-Готовый образ `ghcr.io/kostazol/unisender-sync:1.0.1` доступен для Linux amd64 и arm64. Публичный пакет скачивается без `docker login`. Новые версии появляются при выпуске GitHub Release. [Порядок выпуска](PUBLISHING.md)
+Готовый образ `ghcr.io/kostazol/unisender-sync:1.1.0` доступен для Linux amd64 и arm64. Публичный пакет скачивается без `docker login`. Новые версии появляются при выпуске GitHub Release. [Порядок выпуска](PUBLISHING.md)
 
 Сначала подготовьте [Megaplan](MEGAPLAN.md) и [Unisender](UNISENDER.md).
 
 ## Сгенерировать WebhookSecret
 
 ```bash
-docker run --rm --network none ghcr.io/kostazol/unisender-sync:1.0.1 --command generate-webhook-secret
+docker run --rm --network none ghcr.io/kostazol/unisender-sync:1.1.0 --command generate-webhook-secret
 ```
 
 Команда выводит 64 случайных hex-символа и ничего не сохраняет. Этот секрет также входит в URL webhook Megaplan.
@@ -28,6 +28,14 @@ docker run --rm --network none ghcr.io/kostazol/unisender-sync:1.0.1 --command g
 5. Нажмите Deploy the stack и откройте Logs контейнера.
 
 Встроенные рабочие значения не дублируются в Compose: синхронизация и запись включены. Для проверки без записи добавьте в environment `Settings__Sync__DryRun: "true"`; список должен уже существовать.
+
+Для резервного опроса изменений каждые пять минут добавьте в `environment` сервиса `sync` следующую строку и пересоздайте контейнер.
+
+```yaml
+Settings__Sync__PollingIntervalMinutes: "5"
+```
+
+Если ваш Compose задаёт `Settings__Sync__Enabled` явно, убедитесь, что контейнер получает `true`. При `PollingIntervalMinutes: 0` резервный опрос отключён. [Работа резервного опроса](OPERATIONS.md#резервный-опрос)
 
 Общая внешняя Docker-сеть, база данных и монтирования не нужны. Порт хоста 5080 направлен на 8080 контейнера. Для reverse proxy на том же хосте можно ограничить публикацию строкой `127.0.0.1:5080:8080`.
 

@@ -26,6 +26,8 @@ dotnet build MegaplanUnisender.sln -c Release
 
 В локальном примере включён dry-run. Для записи установите `Settings.Sync.DryRun=false` и пересоберите, чтобы обновлённый JSON скопировался рядом с exe.
 
+Чтобы проверять обновления карточек каждые пять минут, задайте `"PollingIntervalMinutes": 5` в `Settings.Sync` файла `appsettings.Local.json` или передайте аргумент `--Settings:Sync:PollingIntervalMinutes=5`. Опрос запускается при `Sync.Enabled=true`.
+
 Без аргументов запускаются webhook и CLI в этом окне. По умолчанию на Windows адрес 127.0.0.1:5080. Если Megaplan находится на другом сервере и подключается напрямую, выберите сетевой адрес:
 
 ```powershell
