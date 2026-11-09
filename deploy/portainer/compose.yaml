@@ -3,7 +3,7 @@
 # Set the three credentials in Portainer Stack environment variables.
 services:
   sync:
-    image: ghcr.io/kostazol/unisender-sync:1.0.0
+    image: ghcr.io/kostazol/unisender-sync:1.0.1
     restart: always
     stop_grace_period: 45s
     stdin_open: true

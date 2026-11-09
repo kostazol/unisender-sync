@@ -13,7 +13,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace MegaplanUnisender.IntegrationTests;
 
-public sealed class TestApp(bool enabled = false, int capacity = 256, bool worker = true, bool discoverTagByName = false, bool automatic = false, bool dryRun = false, bool unisenderConfigured = true, int maxRetries = 6, int graylogPort = 0) : WebApplicationFactory<Program>
+public sealed class TestApp(bool enabled = false, int capacity = 256, bool worker = true, bool discoverTagByName = false, bool automatic = false, bool dryRun = false, bool unisenderConfigured = true, int maxRetries = 6, int graylogPort = 0, string minimumLogLevel = "Information") : WebApplicationFactory<Program>
 {
     public const string Secret = "fixture-webhook-secret-32-characters";
     public int WriteCalls;
@@ -43,7 +43,7 @@ public sealed class TestApp(bool enabled = false, int capacity = 256, bool worke
             ["Secrets:GraylogAddress"] = graylogPort == 0 ? "" : "127.0.0.1",
             ["Secrets:GraylogPort"] = graylogPort.ToString(),
             ["Secrets:GraylogApplicationName"] = "sync-tests",
-            ["Secrets:GraylogMinimumLevel"] = "Information",
+            ["Secrets:GraylogMinimumLevel"] = minimumLogLevel,
             ["Secrets:MegaplanApiToken"] = "fixture-token", ["Secrets:UnisenderApiKey"] = "fixture-key",
             ["Settings:Megaplan:ExpectedAccountId"] = "299", ["Settings:Megaplan:ExpectedIntegrationUuid"] = "4897ba31-28ec-48fb-a581-85cf8844a7d1",
             ["Settings:Megaplan:AccountIdentityField"] = "uniqueAccountId", ["Settings:Megaplan:SyncAllGlobalTags"] = "false",

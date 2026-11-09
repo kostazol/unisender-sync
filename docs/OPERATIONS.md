@@ -52,6 +52,12 @@ Uncertain означает, что удалённая запись могла в
 
 Пример имени приложения для production: GraylogApplicationName=megaplan-unisender-sync-Production. Фильтр поиска: `application_name:"megaplan-unisender-sync-Production"`. UUID события и ID клиента передаются как EventUuid/ContractorId. HTTP-логи с URL webhook, API-ключами и подписанными ссылками исключаются. Утилита не создаёт файлов логов. GELF UDP не подтверждает получение сервером; локальный тест приёмника проверяет формат и фильтрацию, но не заменяет проверку сообщений на вашем сервере.
 
+### Диагностика доставки вебхука
+
+Для временной диагностики задайте `Secrets__GraylogMinimumLevel=Debug` и пересоздайте контейнер. Две записи от `MegaplanUnisender.Api.Webhook` показывают поступление запроса и его итог с HTTP-кодом и `WebhookOutcome`. Пара связана по `CorrelationId`. Например, `queued` означает постановку в очередь, а `duplicate` — повтор уже принятого события. `Webhook processed` отражает отдельный результат работы очереди.
+
+В этих записях используются безопасные поля, включая размер запроса и проверенные ID события и карточки. После диагностики верните уровень `Information` и пересоздайте контейнер.
+
 ### Алерт об отказе Unisender и тарифном лимите
 
 Любая окончательная ошибка синхронизации записывается на уровне Error (GELF level=3), с AlertCode=sync_failed, ErrorCode, ApiMethod, ListId, Status, Attempts, EventUuid и ContractorId. В ErrorCode сохраняется безопасный код Unisender, например unisender_not_enough_money/unspecified/http_402; текст поставщика не логируется, потому что может содержать email и ключи. Постоянная бизнес-ошибка не повторяется автоматически. После исправления тарифа можно выполнить sync <id> или retry <uuid>; следующие события продолжают обрабатываться.

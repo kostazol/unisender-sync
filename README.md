@@ -37,7 +37,7 @@ ID аккаунта, управляющей метки и списка опре�
 | Автоматический запуск в Linux | [systemd](docs/LINUX_SERVICE.md) |
 | Готовый контейнер и Portainer | [Docker](docs/DOCKER.md) |
 
-Готовый образ: `ghcr.io/kostazol/unisender-sync:1.0.0` для Linux amd64 и arm64. [Версии](https://github.com/kostazol/unisender-sync/releases) · [Пакет GHCR](https://github.com/kostazol/unisender-sync/pkgs/container/unisender-sync).
+Готовый образ `ghcr.io/kostazol/unisender-sync:1.0.1` доступен для Linux amd64 и arm64. [Версии](https://github.com/kostazol/unisender-sync/releases) · [Пакет GHCR](https://github.com/kostazol/unisender-sync/pkgs/container/unisender-sync).
 
 В Portainer можно скопировать [Compose-пример](deploy/portainer/compose.yaml). API-ключи и WebhookSecret передаются при запуске; для сборки образа они не нужны.
 

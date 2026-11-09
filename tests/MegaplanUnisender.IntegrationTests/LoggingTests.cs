@@ -12,6 +12,49 @@ namespace MegaplanUnisender.IntegrationTests;
 
 public sealed class LoggingTests
 {
+    [Fact]
+    public async Task WebhookDebugGelfCorrelatesReceiptWithQueueDuplicateAndRejectedRequest()
+    {
+        using var receiver = new UdpClient(new IPEndPoint(IPAddress.Loopback, 0));
+        using var app = new TestApp(enabled: true, worker: false, graylogPort: ((IPEndPoint)receiver.Client.LocalEndPoint!).Port,
+            minimumLogLevel: "Debug");
+        using var client = app.CreateClient();
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+        var uuid = Guid.NewGuid();
+        var endpoint = "/webhooks/megaplan/" + TestApp.Secret;
+        var payload = TestApp.Event(uuid.ToString());
+
+        await AssertRequest(endpoint, HttpStatusCode.OK, "queued");
+        await AssertRequest(endpoint, HttpStatusCode.OK, "duplicate");
+        await AssertRequest(endpoint + "-invalid", HttpStatusCode.Unauthorized, "invalid_secret");
+        Assert.Single(app.Runtime.Events());
+
+        async Task AssertRequest(string path, HttpStatusCode status, string outcome)
+        {
+            using var response = await client.PostAsJsonAsync(path, payload, timeout.Token);
+            Assert.Equal(status, response.StatusCode);
+            var correlation = Assert.Single(response.Headers.GetValues("X-Correlation-ID"));
+            using var receipt = await ReceiveMatching(receiver, IsThisRequest, timeout.Token);
+            Assert.StartsWith("Megaplan webhook received", receipt.RootElement.GetProperty("short_message").GetString(), StringComparison.Ordinal);
+            using var completed = await ReceiveMatching(receiver, IsThisRequest, timeout.Token);
+            Assert.Equal(outcome, completed.RootElement.GetProperty("_WebhookOutcome").GetString());
+            Assert.Equal((int)status, completed.RootElement.GetProperty("_HttpStatusCode").GetInt32());
+            if (status == HttpStatusCode.OK)
+            {
+                Assert.Equal(uuid.ToString(), completed.RootElement.GetProperty("_EventUuid").GetString());
+                Assert.Equal("1000251", completed.RootElement.GetProperty("_ContractorId").GetString());
+            }
+            foreach (var record in new[] { receipt.RootElement, completed.RootElement })
+            {
+                Assert.Equal(7, record.GetProperty("level").GetInt32());
+                Assert.DoesNotContain(TestApp.Secret, record.ToString());
+                Assert.DoesNotContain("accountInfo", record.ToString());
+            }
+
+            bool IsThisRequest(JsonElement root) => root.TryGetProperty("_CorrelationId", out var id) && id.GetString() == correlation;
+        }
+    }
+
     [Theory] [InlineData(false)] [InlineData(true)]
     public async Task ContactLimitWarningProducesErrorGelfWithoutRepeatingAcceptedWrite(bool existing)
     {
@@ -53,15 +96,20 @@ public sealed class LoggingTests
     private static async Task<JsonDocument> ReceiveAlert(UdpClient receiver, string alertCode)
     {
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        return await ReceiveMatching(receiver, root => root.TryGetProperty("_AlertCode", out var code) && code.GetString() == alertCode, timeout.Token);
+    }
+
+    private static async Task<JsonDocument> ReceiveMatching(UdpClient receiver, Func<JsonElement, bool> predicate, CancellationToken cancellationToken)
+    {
         while (true)
         {
-            var packet = (await receiver.ReceiveAsync(timeout.Token)).Buffer;
+            var packet = (await receiver.ReceiveAsync(cancellationToken)).Buffer;
             using var bytes = new MemoryStream(packet);
             using Stream stream = packet is [0x1f, 0x8b, ..] ? new GZipStream(bytes, CompressionMode.Decompress) :
                 packet[0] == 0x78 ? new ZLibStream(bytes, CompressionMode.Decompress) : bytes;
             using var reader = new StreamReader(stream, Encoding.UTF8);
-            var document = JsonDocument.Parse(await reader.ReadToEndAsync(timeout.Token));
-            if (document.RootElement.TryGetProperty("_AlertCode", out var code) && code.GetString() == alertCode) return document;
+            var document = JsonDocument.Parse(await reader.ReadToEndAsync(cancellationToken));
+            if (predicate(document.RootElement)) return document;
             document.Dispose();
         }
     }
@@ -76,6 +124,7 @@ public sealed class LoggingTests
             GraylogApplicationName = "sync-tests", GraylogSource = "loopback-tests"
         });
         using var logger = configuration.CreateLogger();
+        logger.Debug("Webhook diagnostic at Debug level");
         logger.ForContext("SourceContext", "Microsoft.AspNetCore.Hosting.Diagnostics").Information("request /webhooks/megaplan/private-hook-secret");
         logger.ForContext("SourceContext", "System.Net.Http.HttpClient.Unisender").Information("key=private-api-key");
         var uuid = Guid.NewGuid();
@@ -86,6 +135,7 @@ public sealed class LoggingTests
         using Stream stream = packet is [0x1f, 0x8b, ..] ? new GZipStream(bytes, CompressionMode.Decompress) :
             packet[0] == 0x78 ? new ZLibStream(bytes, CompressionMode.Decompress) : bytes;
         using var reader = new StreamReader(stream, Encoding.UTF8); var json = await reader.ReadToEndAsync(timeout.Token);
+        Assert.DoesNotContain("Webhook diagnostic at Debug level", json);
         Assert.DoesNotContain("private-hook-secret", json); Assert.DoesNotContain("private-api-key", json);
         using var message = JsonDocument.Parse(json); var root = message.RootElement;
         Assert.Equal("sync-tests", root.GetProperty("_application_name").GetString());

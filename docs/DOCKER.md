@@ -1,13 +1,13 @@
 # Docker и Portainer
 
-Готовый образ: `ghcr.io/kostazol/unisender-sync:1.0.0`, Linux amd64 и arm64. После настройки публичности пакета он скачивается без регистрации и docker login. Новые версии появляются при [выпуске GitHub Release](PUBLISHING.md).
+Готовый образ `ghcr.io/kostazol/unisender-sync:1.0.1` доступен для Linux amd64 и arm64. Публичный пакет скачивается без `docker login`. Новые версии появляются при выпуске GitHub Release. [Порядок выпуска](PUBLISHING.md)
 
 Сначала подготовьте [Megaplan](MEGAPLAN.md) и [Unisender](UNISENDER.md).
 
 ## Сгенерировать WebhookSecret
 
 ```bash
-docker run --rm --network none ghcr.io/kostazol/unisender-sync:1.0.0 --command generate-webhook-secret
+docker run --rm --network none ghcr.io/kostazol/unisender-sync:1.0.1 --command generate-webhook-secret
 ```
 
 Команда выводит 64 случайных hex-символа и ничего не сохраняет. Этот секрет также входит в URL webhook Megaplan.

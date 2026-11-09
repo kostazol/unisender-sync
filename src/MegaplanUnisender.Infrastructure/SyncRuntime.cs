@@ -62,11 +62,14 @@ public sealed class SyncRuntime(IOptions<IntegrationOptions> options, TimeProvid
     }
     private sealed record RecentContractor(string? Email, bool Eligible, DateTimeOffset ExpiresAt);
 
-    public bool TryAccept(WebhookEvent entry)
+    public bool TryAccept(WebhookEvent entry) => TryAccept(entry, out _);
+
+    public bool TryAccept(WebhookEvent entry, out bool duplicate)
     {
         lock (historyLock)
         {
-            if (events.ContainsKey(entry.Uuid)) return true;
+            duplicate = events.ContainsKey(entry.Uuid);
+            if (duplicate) return true;
             if (entry.Status == "Pending")
             {
                 if (!queue.Writer.TryWrite(entry)) return false;

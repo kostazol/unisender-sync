@@ -1,5 +1,6 @@
 using MegaplanUnisender.Core;
 using Serilog;
+using Serilog.Core;
 using Serilog.Events;
 using Serilog.Formatting.Json;
 using Serilog.Sinks.Graylog;
@@ -14,6 +15,7 @@ public static class ServiceLogging
         var level = Enum.TryParse<LogEventLevel>(secrets.GraylogMinimumLevel, true, out var parsed) && Enum.IsDefined(parsed)
             ? parsed : LogEventLevel.Information;
         logger.MinimumLevel.Is(level).Enrich.FromLogContext()
+            .Enrich.With(new RemoveRequestPath())
             .Enrich.WithProperty("application_name", secrets.GraylogApplicationName)
             // Framework HTTP events may contain the webhook secret, API key or signed download URL.
             .Filter.ByExcluding(e => e.Properties.TryGetValue("SourceContext", out var source) && source is ScalarValue { Value: string category } &&
@@ -29,5 +31,14 @@ public static class ServiceLogging
         };
         if (!string.IsNullOrWhiteSpace(secrets.GraylogSource)) options.HostnameOverride = secrets.GraylogSource;
         logger.WriteTo.Graylog(options);
+    }
+
+    private sealed class RemoveRequestPath : ILogEventEnricher
+    {
+        public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
+        {
+            // ASP.NET adds the path to custom log events through its request scope.
+            logEvent.RemovePropertyIfPresent("RequestPath");
+        }
     }
 }
